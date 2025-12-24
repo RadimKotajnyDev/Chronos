@@ -4,4 +4,6 @@ public class BuryRequest
 {
     public string Message { get; set; }
     public DateTime UnlockAt { get; set; }
+    
+    public Guid? OverriderId { get; set; }
 }

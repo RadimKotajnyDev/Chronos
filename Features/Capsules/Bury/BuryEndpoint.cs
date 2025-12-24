@@ -31,7 +31,8 @@ public class BuryEndpoint : Endpoint<BuryRequest, BuryResponse>
             Id = Guid.NewGuid(),
             Message = req.Message,
             CreatedAt = DateTime.UtcNow,
-            UnlockAt = req.UnlockAt
+            UnlockAt = req.UnlockAt,
+            OverriderId = req.OverriderId
         };
 
         await _dbContext.TimeCapsules.AddAsync(capsule, ct);

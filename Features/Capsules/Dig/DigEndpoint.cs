@@ -25,7 +25,10 @@ public class DigEndpoint(AppDbContext dbContext) : Endpoint<DigRequest, DigRespo
             return;
         }
         
-        if (DateTime.UtcNow < capsule.UnlockAt)
+        var isTimeLocked = DateTime.UtcNow < capsule.UnlockAt;
+        var hasValidKey = capsule.OverriderId == req.OverriderId;
+        
+        if (isTimeLocked && !hasValidKey)
         {
             ThrowError($"Ještě je brzy! Kapsle se otevře až: {capsule.UnlockAt}");
         }
