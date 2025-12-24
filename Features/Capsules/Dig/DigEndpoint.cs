@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TimeCapsule.Features.Capsules.Dig;
 
-public class DigEndpoint : Endpoint<DigRequest, DigResponse>
+public class DigEndpoint(AppDbContext dbContext) : Endpoint<DigRequest, DigResponse>
 {
-    private readonly AppDbContext _dbContext;
-
-    public DigEndpoint(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
 
     public override void Configure()
     {
