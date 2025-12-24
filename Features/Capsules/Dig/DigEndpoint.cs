@@ -1,31 +1,44 @@
 using FastEndpoints;
 using TimeCapsule.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TimeCapsule.Features.Capsules.Dig;
 
 public class DigEndpoint : Endpoint<DigRequest, DigResponse>
 {
-    public AppDbContext Db { get; set; } 
+    private readonly AppDbContext _dbContext;
+
+    public DigEndpoint(AppDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     public override void Configure()
     {
-        Post("/api/capsules/dig");
+        Get("/api/capsules/dig/{Id}");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(DigRequest req, CancellationToken ct)
     {
-        var capsule = new Domain.TimeCapsule
+        var capsule = await _dbContext.TimeCapsules
+            .FirstOrDefaultAsync(c => c.Id == req.Id, ct);
+
+        if (capsule == null)
         {
-            Id = Guid.NewGuid(),
-            Message = req.Message,
-            CreatedAt = DateTime.UtcNow,
-            UnlockAt = DateTime.UtcNow.AddYears(1) 
-        };
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+        
+        if (DateTime.UtcNow < capsule.UnlockAt)
+        {
+            ThrowError($"Ještě je brzy! Kapsle se otevře až: {capsule.UnlockAt}");
+        }
 
-        Db.TimeCapsules.Add(capsule);
-        await Db.SaveChangesAsync(ct);
-
-        await Send.OkAsync(new DigResponse { Message = "Kapsle zakopána!" });
+        await Send.OkAsync(new DigResponse
+        {
+            Message = capsule.Message,
+            CreatedAt = capsule.CreatedAt
+        }, cancellation: ct);
     }
 }
