@@ -26,7 +26,7 @@ public class DigEndpoint(AppDbContext dbContext) : Endpoint<DigRequest, DigRespo
         }
         
         var isTimeLocked = DateTime.UtcNow < capsule.UnlockAt;
-        var hasValidKey = capsule.OverriderId == req.OverriderId;
+        var hasValidKey = capsule.OverriderId.HasValue && capsule.OverriderId == req.OverriderId;
         
         if (isTimeLocked && !hasValidKey)
         {
