@@ -4,45 +4,45 @@
 
 <PageTitle>Chronos - Nová kapsle</PageTitle>
 
-<div class="center-container">
-    <div class="card">
-        <h1>⏳ Chronos</h1>
-        <p class="subtitle">Pošli vzkaz do budoucnosti.</p>
+<div class="flex justify-center pt-12 font-sans">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-[500px] text-center">
+        <h1 class="mt-0 text-[#333]">⏳ Chronos</h1>
+        <p class="text-4xl text-red-400">Pošli vzkaz do budoucnosti.</p>
 
-        <div class="form-group">
-            <label>Tvůj vzkaz:</label>
-            <textarea @bind="message" class="form-control" rows="4" placeholder="Napiš něco tajného..."></textarea>
+        <div class="mb-4 text-left">
+            <label class="block mb-2 font-medium">Tvůj vzkaz:</label>
+            <textarea @bind="message" class="w-full p-2.5 box-border border border-[#ccc] rounded" rows="4" placeholder="Napiš něco tajného..."></textarea>
         </div>
 
-        <div class="form-group">
-            <label>Datum odemčení:</label>
-            <input @bind="unlockAt" type="datetime-local" class="form-control" />
+        <div class="mb-4 text-left">
+            <label class="block mb-2 font-medium">Datum odemčení:</label>
+            <input @bind="unlockAt" type="datetime-local" class="w-full p-2.5 box-border border border-[#ccc] rounded" />
         </div>
 
-        <div class="form-group">
-            <label>Nouzový klíč (Overrider ID):</label>
-            <input @bind="customOverriderId" class="form-control" placeholder="Volitelné GUID (např. z guidgenerator.com)" />
-            <small class="hint">Pokud vyplníš, můžeš kapsli otevřít kdykoliv.</small>
+        <div class="mb-4 text-left">
+            <label class="block mb-2 font-medium">Nouzový klíč (Overrider ID):</label>
+            <input @bind="customOverriderId" class="w-full p-2.5 box-border border border-[#ccc] rounded" placeholder="Volitelné GUID (např. z guidgenerator.com)" />
+            <small class="block mt-1 text-xs text-[#888]">Pokud vyplníš, můžeš kapsli otevřít kdykoliv.</small>
         </div>
 
-        <button @onclick="BuryCapsule" class="btn-primary" disabled="@isSubmitting">
+        <button @onclick="BuryCapsule" class="w-full py-3 px-5 bg-[#3498db] text-white rounded-md cursor-pointer border-0 font-bold text-base mt-2 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled="@isSubmitting">
             @if (isSubmitting) { <span>Zakopávám... 🚧</span> } else { <span>Zakopat kapsli ⚰️</span> }
         </button>
 
         @if (lastResponseId != null)
         {
-            <div class="success-box">
-                <h3>✅ Kapsle zakopána!</h3>
-                <p>Uschovej si toto ID, budeš ho potřebovat k vyzvednutí:</p>
-                <div class="id-display">@lastResponseId</div>
+            <div class="mt-6 p-4 bg-[#d4edda] border border-[#c3e6cb] rounded-lg text-[#155724]">
+                <h3 class="mt-0 text-lg">✅ Kapsle zakopána!</h3>
+                <p>Uschovej si toto ID, budeš ho potřebovat k vyzhednutí:</p>
+                <div class="bg-[#f8f9fa] p-3 rounded my-2 font-mono text-sm break-all">@lastResponseId</div>
                 <br/>
-                <a href="/dig/@lastResponseId">Jít rovnou ke kapsli →</a>
+                <a href="/dig/@lastResponseId" class="text-[#007bff] underline">Jít rovnou ke kapsli →</a>
             </div>
         }
         
         @if (errorMessage != null)
         {
-            <div class="error-box">❌ @errorMessage</div>
+            <div class="mt-4 p-4 bg-[#f8d7da] border border-[#f5c6cb] rounded-lg text-[#721c24]">❌ @errorMessage</div>
         }
     </div>
 </div>
@@ -115,21 +115,3 @@
         public string Message { get; set; }
     }
 }
-
-<style>
-    /* Jednoduchý styling přímo v komponentě */
-    .center-container { display: flex; justify-content: center; padding-top: 50px; font-family: sans-serif; }
-    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-    h1 { margin-top: 0; color: #333; text-align: center; }
-    .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
-    .form-group { margin-bottom: 1.2rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #444; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
-    .hint { color: #888; font-size: 0.8rem; }
-    .btn-primary { width: 100%; background: #2c3e50; color: white; border: none; padding: 12px; font-size: 1.1rem; border-radius: 6px; cursor: pointer; margin-top: 1rem; transition: background 0.2s; }
-    .btn-primary:hover { background: #34495e; }
-    .btn-primary:disabled { background: #95a5a6; cursor: not-allowed; }
-    .success-box { margin-top: 2rem; padding: 1rem; background: #e8f8f5; border: 1px solid #2ecc71; border-radius: 6px; text-align: center; color: #27ae60; }
-    .error-box { margin-top: 1rem; padding: 1rem; background: #fdedec; border: 1px solid #e74c3c; border-radius: 6px; color: #c0392b; }
-    .id-display { font-family: monospace; background: #fff; padding: 5px; border: 1px solid #ddd; margin-top: 5px; font-weight: bold; color: #333; }
-</style>

@@ -4,55 +4,55 @@
 
 <PageTitle>Chronos - Vykopání</PageTitle>
 
-<div class="center-container">
-    <div class="card">
+<div class="flex justify-center pt-12 font-sans">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-[500px] text-center">
         
         @if (isLoading)
         {
-            <div class="loading">
-                <h2>⛏️ Kopu v datech...</h2>
+            <div>
+                <h2 class="mt-0 text-[#333]">⛏️ Kopu v datech...</h2>
                 <p>Prosím čekej.</p>
             </div>
         }
         else if (capsule != null)
         {
             /* --- ÚSPĚCH: KAPSLE ODEMČENA --- */
-            <div class="success-content">
-                <h1>🎉 Kapsle nalezena!</h1>
-                <p class="timestamp">Vytvořeno: @capsule.CreatedAt.ToLocalTime().ToString("g")</p>
-                <div class="message-bubble">
+            <div>
+                <h1 class="mt-0 text-[#333]">🎉 Kapsle nalezena!</h1>
+                <p class="text-[#888] text-sm">Vytvořeno: @capsule.CreatedAt.ToLocalTime().ToString("g")</p>
+                <div class="bg-[#f0f4f8] p-6 rounded-lg text-xl text-[#2c3e50] my-6 italic whitespace-pre-wrap">
                     @capsule.Message
                 </div>
-                <a href="/" class="btn-secondary">Zakopat další</a>
+                <a href="/" class="inline-block py-2.5 px-5 rounded-md no-underline cursor-pointer border-0 mt-2.5 bg-[#95a5a6] text-white">Zakopat další</a>
             </div>
         }
         else if (isTooEarly)
         {
             /* --- CHYBA: JEŠTĚ JE BRZY + OVERRIDE --- */
-            <div class="locked-content">
-                <h1>🔒 Zamčeno</h1>
+            <div>
+                <h1 class="mt-0 text-[#333]">🔒 Zamčeno</h1>
                 <p>Tato kapsle se má otevřít až v budoucnosti.</p>
                 
-                <div class="override-section">
-                    <h3>Máš nouzový klíč?</h3>
-                    <input @bind="overrideInput" class="form-control" placeholder="Vlož GUID klíč..." />
-                    <button @onclick="TryUnlock" class="btn-warning">Odemknout násilím 🔓</button>
+                <div class="mt-8 p-6 border-2 border-dashed border-[#e67e22] rounded-lg bg-[#fdf5e6]">
+                    <h3 class="mt-0 text-[#d35400]">Máš nouzový klíč?</h3>
+                    <input @bind="overrideInput" class="w-full p-2.5 mb-2.5 box-border border border-[#ccc] rounded" placeholder="Vlož GUID klíč..." />
+                    <button @onclick="TryUnlock" class="inline-block py-2.5 px-5 rounded-md no-underline cursor-pointer border-0 mt-2.5 bg-[#e67e22] text-white w-full font-bold">Odemknout násilím 🔓</button>
                     @if (overrideError != null)
                     {
-                        <p class="error-text">@overrideError</p>
+                        <p class="text-red-600 mt-1.5 font-bold">@overrideError</p>
                     }
                 </div>
                 <br/>
-                <a href="/" class="link">Zpět na hlavní stránku</a>
+                <a href="/" class="text-[#3498db] no-underline inline-block mt-4">Zpět na hlavní stránku</a>
             </div>
         }
         else
         {
             /* --- CHYBA: 404 NEEXISTUJE --- */
-            <div class="not-found">
-                <h1>❓ 404</h1>
+            <div>
+                <h1 class="mt-0 text-[#333]">❓ 404</h1>
                 <p>Tato kapsle neexistuje nebo byla zničena.</p>
-                <a href="/" class="btn-secondary">Zpět</a>
+                <a href="/" class="inline-block py-2.5 px-5 rounded-md no-underline cursor-pointer border-0 mt-2.5 bg-[#95a5a6] text-white">Zpět</a>
             </div>
         }
 
@@ -134,18 +134,3 @@
     }
 }
 
-<style>
-    .center-container { display: flex; justify-content: center; padding-top: 50px; font-family: sans-serif; }
-    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-    h1 { margin-top: 0; color: #333; }
-    .message-bubble { background: #f0f4f8; padding: 1.5rem; border-radius: 8px; font-size: 1.2rem; color: #2c3e50; margin: 1.5rem 0; font-style: italic; white-space: pre-wrap;}
-    .timestamp { color: #888; font-size: 0.9rem; }
-    .btn-secondary, .btn-warning { display: inline-block; padding: 10px 20px; border-radius: 6px; text-decoration: none; cursor: pointer; border: none; margin-top: 10px;}
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-warning { background: #e67e22; color: white; width: 100%; font-weight: bold; }
-    .override-section { margin-top: 2rem; padding: 1.5rem; border: 2px dashed #e67e22; border-radius: 8px; background: #fdf5e6; }
-    .override-section h3 { margin-top: 0; color: #d35400; }
-    .form-control { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    .error-text { color: red; margin-top: 5px; font-weight: bold; }
-    .link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 1rem; }
-</style>
