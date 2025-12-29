@@ -24,8 +24,15 @@
 
             <div>
                 <label class="block mb-2 font-medium text-gray-700">Emergency key (Overrider ID):</label>
-                <input @bind="customOverriderId" placeholder="Optional GUID (e.g., from guidgenerator.com)"
-                       class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:border-transparent" />
+                <div class="flex gap-2">
+                    <input @bind="customOverriderId" placeholder="Optional GUID"
+                           class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:border-transparent" />
+                    
+                    <button type="button" @onclick="GenerateGuid"
+                            class="rounded-md bg-gray-100 px-4 py-2 font-medium text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors whitespace-nowrap">
+                        Generate
+                    </button>
+                </div>
                 <small class="text-gray-500 text-sm">If provided, you can open the capsule at any time.</small>
             </div>
 
@@ -61,6 +68,12 @@
     private bool isSubmitting = false;
     private string? lastResponseId;
     private string? errorMessage;
+
+    // Changes: Added this method to generate a new GUID
+    private void GenerateGuid()
+    {
+        customOverriderId = Guid.NewGuid().ToString();
+    }
 
     private async Task BuryCapsule()
     {
