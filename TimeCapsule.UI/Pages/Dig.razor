@@ -4,55 +4,58 @@
 
 <PageTitle>Chronos - Vykopání</PageTitle>
 
-<div class="center-container">
-    <div class="card">
+<div class="min-h-screen flex justify-center pt-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-8 text-center">
         
         @if (isLoading)
         {
-            <div class="loading">
-                <h2>⛏️ Kopu v datech...</h2>
-                <p>Prosím čekej.</p>
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800">⛏️ Kopu v datech...</h2>
+                <p class="text-gray-600">Prosím čekej.</p>
             </div>
         }
         else if (capsule != null)
         {
             /* --- ÚSPĚCH: KAPSLE ODEMČENA --- */
-            <div class="success-content">
-                <h1>🎉 Kapsle nalezena!</h1>
-                <p class="timestamp">Vytvořeno: @capsule.CreatedAt.ToLocalTime().ToString("g")</p>
-                <div class="message-bubble">
+            <div>
+                <h1 class="mt-0 text-2xl font-bold text-gray-800">🎉 Kapsle nalezena!</h1>
+                <p class="text-sm text-gray-500">Vytvořeno: @capsule.CreatedAt.ToLocalTime().ToString("g")</p>
+                <div class="mt-6 bg-slate-100 text-slate-800 italic rounded-md p-4 whitespace-pre-wrap text-left">
                     @capsule.Message
                 </div>
-                <a href="/" class="btn-secondary">Zakopat další</a>
+                <a href="/" class="inline-block mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">Zakopat další</a>
             </div>
         }
         else if (isTooEarly)
         {
             /* --- CHYBA: JEŠTĚ JE BRZY + OVERRIDE --- */
-            <div class="locked-content">
-                <h1>🔒 Zamčeno</h1>
-                <p>Tato kapsle se má otevřít až v budoucnosti.</p>
+            <div>
+                <h1 class="mt-0 text-2xl font-bold text-gray-800">🔒 Zamčeno</h1>
+                <p class="text-gray-600">Tato kapsle se má otevřít až v budoucnosti.</p>
                 
-                <div class="override-section">
-                    <h3>Máš nouzový klíč?</h3>
-                    <input @bind="overrideInput" class="form-control" placeholder="Vlož GUID klíč..." />
-                    <button @onclick="TryUnlock" class="btn-warning">Odemknout násilím 🔓</button>
+                <div class="mt-6 p-4 rounded-md border-2 border-dashed border-orange-500 bg-orange-50 text-left">
+                    <h3 class="text-orange-700 font-semibold">Máš nouzový klíč?</h3>
+                    <input @bind="overrideInput" placeholder="Vlož GUID klíč..."
+                           class="mt-3 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent" />
+                    <button @onclick="TryUnlock"
+                            class="mt-3 w-full bg-orange-600 hover:bg-orange-700 text-white font-bold px-4 py-2 rounded-md">Odemknout násilím 🔓</button>
                     @if (overrideError != null)
                     {
-                        <p class="error-text">@overrideError</p>
+                        <p class="text-red-600 font-semibold mt-2">@overrideError</p>
                     }
                 </div>
-                <br/>
-                <a href="/" class="link">Zpět na hlavní stránku</a>
+                <div class="mt-4">
+                    <a href="/" class="text-sky-600 hover:underline">Zpět na hlavní stránku</a>
+                </div>
             </div>
         }
         else
         {
             /* --- CHYBA: 404 NEEXISTUJE --- */
-            <div class="not-found">
-                <h1>❓ 404</h1>
-                <p>Tato kapsle neexistuje nebo byla zničena.</p>
-                <a href="/" class="btn-secondary">Zpět</a>
+            <div>
+                <h1 class="mt-0 text-2xl font-bold text-gray-800">❓ 404</h1>
+                <p class="text-gray-600">Tato kapsle neexistuje nebo byla zničena.</p>
+                <a href="/" class="inline-block mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">Zpět</a>
             </div>
         }
 
@@ -133,19 +136,3 @@
         public DateTime CreatedAt { get; set; }
     }
 }
-
-<style>
-    .center-container { display: flex; justify-content: center; padding-top: 50px; font-family: sans-serif; }
-    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-    h1 { margin-top: 0; color: #333; }
-    .message-bubble { background: #f0f4f8; padding: 1.5rem; border-radius: 8px; font-size: 1.2rem; color: #2c3e50; margin: 1.5rem 0; font-style: italic; white-space: pre-wrap;}
-    .timestamp { color: #888; font-size: 0.9rem; }
-    .btn-secondary, .btn-warning { display: inline-block; padding: 10px 20px; border-radius: 6px; text-decoration: none; cursor: pointer; border: none; margin-top: 10px;}
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-warning { background: #e67e22; color: white; width: 100%; font-weight: bold; }
-    .override-section { margin-top: 2rem; padding: 1.5rem; border: 2px dashed #e67e22; border-radius: 8px; background: #fdf5e6; }
-    .override-section h3 { margin-top: 0; color: #d35400; }
-    .form-control { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    .error-text { color: red; margin-top: 5px; font-weight: bold; }
-    .link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 1rem; }
-</style>
