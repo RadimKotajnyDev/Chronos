@@ -1,39 +1,21 @@
-﻿<div class="top-row bg-slate-900 text-white h-14">
-    <div class="w-full mx-auto flex items-center justify-between px-3 h-full">
-        <a class="text-white font-semibold" href="">TimeCapsule.UI</a>
-        <button title="Navigation menu" class="p-2 rounded hover:bg-white/10 md:hidden" @onclick="ToggleNavMenu">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
+﻿<div class="bg-slate-900 text-white h-16">
+    <div class="max-w-7xl mx-auto h-full grid grid-cols-3 items-center px-4">
+        
+        <div class="justify-self-start">
+            <a class="text-white font-semibold text-3xl" href="/">Chronos</a>
+        </div>
+
+        <nav class="justify-self-center flex space-x-8">
+            <NavLink class="text-gray-300 hover:text-white" ActiveClass="text-white underline" href="/" Match="NavLinkMatch.All">
+                Bury
+            </NavLink>
+            <NavLink class="text-gray-300 hover:text-white" ActiveClass="text-white underline" href="/dig">
+                Dig
+            </NavLink>
+        </nav>
+
+        <div class="justify-self-end">
+        </div>
+
     </div>
-    
 </div>
-
-<div class="@NavMenuCssClass md:h-[calc(100vh-3.5rem)] md:overflow-y-auto" @onclick="ToggleNavMenu">
-    <nav class="flex flex-col space-y-3 mt-3">
-        <div class="px-3">
-            <NavLink class="text-gray-300 rounded h-12 flex items-center px-3 hover:bg-white/10 hover:text-white"
-                     ActiveClass="bg-white/40 text-white" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Bury
-            </NavLink>
-        </div>
-        <div class="px-3">
-            <NavLink class="text-gray-300 rounded h-12 flex items-center px-3 hover:bg-white/10 hover:text-white"
-                     ActiveClass="bg-white/40 text-white" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Dig
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "hidden md:block" : "block";
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
