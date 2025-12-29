@@ -1,26 +1,32 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">TimeCapsule.UI</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
+﻿<div class="top-row bg-slate-900 text-white h-14">
+    <div class="w-full mx-auto flex items-center justify-between px-3 h-full">
+        <a class="text-white font-semibold" href="">TimeCapsule.UI</a>
+        <button title="Navigation menu" class="p-2 rounded hover:bg-white/10 md:hidden" @onclick="ToggleNavMenu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
         </button>
     </div>
+    
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
+<div class="@NavMenuCssClass md:h-[calc(100vh-3.5rem)] md:overflow-y-auto" @onclick="ToggleNavMenu">
+    <nav class="flex flex-col">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="text-gray-300 rounded h-12 flex items-center px-3 hover:bg-white/10 hover:text-white"
+                     ActiveClass="bg-white/40 text-white" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
+            <NavLink class="text-gray-300 rounded h-12 flex items-center px-3 hover:bg-white/10 hover:text-white"
+                     ActiveClass="bg-white/40 text-white" href="counter">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
+            <NavLink class="text-gray-300 rounded h-12 flex items-center px-3 hover:bg-white/10 hover:text-white"
+                     ActiveClass="bg-white/40 text-white" href="weather">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
@@ -30,7 +36,7 @@
 @code {
     private bool collapseNavMenu = true;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "hidden md:block" : "block";
 
     private void ToggleNavMenu()
     {
