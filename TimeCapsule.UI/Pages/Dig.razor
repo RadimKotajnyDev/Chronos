@@ -1,151 +1,43 @@
-@page "/dig/{Id}"
-@inject HttpClient Http
-@using System.Net
+@page "/dig"
+@inject NavigationManager Nav
 
-<PageTitle>Chronos - Vykopání</PageTitle>
+<PageTitle>Chronos - Retrieve Capsule</PageTitle>
 
-<div class="center-container">
-    <div class="card">
+<div class="h-fit flex justify-center pt-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-8 text-center">
         
-        @if (isLoading)
-        {
-            <div class="loading">
-                <h2>⛏️ Kopu v datech...</h2>
-                <p>Prosím čekej.</p>
+        <h1 class="mt-0 text-2xl font-bold text-gray-800">Retrieve a Capsule</h1>
+        <p class="text-gray-600 mb-6">Enter the unique ID (GUID) provided when the capsule was buried.</p>
+
+        <form @onsubmit="NavigateToCapsule">
+            <div class="text-left">
+                <label for="capsuleId" class="block text-sm font-medium text-gray-700">Capsule ID</label>
+                <input @bind="inputId" 
+                       id="capsuleId"
+                       type="text" 
+                       placeholder="e.g. a1b2c3d4-..."
+                       class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent" 
+                       required />
             </div>
-        }
-        else if (capsule != null)
-        {
-            /* --- ÚSPĚCH: KAPSLE ODEMČENA --- */
-            <div class="success-content">
-                <h1>🎉 Kapsle nalezena!</h1>
-                <p class="timestamp">Vytvořeno: @capsule.CreatedAt.ToLocalTime().ToString("g")</p>
-                <div class="message-bubble">
-                    @capsule.Message
-                </div>
-                <a href="/" class="btn-secondary">Zakopat další</a>
-            </div>
-        }
-        else if (isTooEarly)
-        {
-            /* --- CHYBA: JEŠTĚ JE BRZY + OVERRIDE --- */
-            <div class="locked-content">
-                <h1>🔒 Zamčeno</h1>
-                <p>Tato kapsle se má otevřít až v budoucnosti.</p>
-                
-                <div class="override-section">
-                    <h3>Máš nouzový klíč?</h3>
-                    <input @bind="overrideInput" class="form-control" placeholder="Vlož GUID klíč..." />
-                    <button @onclick="TryUnlock" class="btn-warning">Odemknout násilím 🔓</button>
-                    @if (overrideError != null)
-                    {
-                        <p class="error-text">@overrideError</p>
-                    }
-                </div>
-                <br/>
-                <a href="/" class="link">Zpět na hlavní stránku</a>
-            </div>
-        }
-        else
-        {
-            /* --- CHYBA: 404 NEEXISTUJE --- */
-            <div class="not-found">
-                <h1>❓ 404</h1>
-                <p>Tato kapsle neexistuje nebo byla zničena.</p>
-                <a href="/" class="btn-secondary">Zpět</a>
-            </div>
-        }
+
+            <button type="submit" 
+                    class="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-md transition-colors">
+                Dig it up
+            </button>
+        </form>
 
     </div>
 </div>
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
+    private string inputId = "";
 
-    private DigResponseDto? capsule;
-    private bool isLoading = true;
-    private bool isTooEarly = false;
-    private string overrideInput = "";
-    private string? overrideError;
-
-    protected override async Task OnInitializedAsync()
+    private void NavigateToCapsule()
     {
-        await LoadCapsule(null);
-    }
-
-    private async Task TryUnlock()
-    {
-        if (string.IsNullOrWhiteSpace(overrideInput)) return;
-        overrideError = null;
-        await LoadCapsule(overrideInput);
-    }
-
-    private async Task LoadCapsule(string? key)
-    {
-        isLoading = true;
-        isTooEarly = false;
-
-        try
+        if (!string.IsNullOrWhiteSpace(inputId))
         {
-            var url = $"/api/capsules/dig/{Id}";
-            if (!string.IsNullOrEmpty(key))
-            {
-                url += $"?overriderId={key}";
-            }
-
-            var response = await Http.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
-            {
-                capsule = await response.Content.ReadFromJsonAsync<DigResponseDto>();
-            }
-            else
-            {
-                // Pokud server vrátí chybu, zjistíme jakou
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    capsule = null; // 404
-                }
-                else 
-                {
-                    // Předpokládáme, že chyba 500 nebo 400 znamená "Ještě je brzy"
-                    // (Tvoje ThrowError ve FastEndpoints vrací myslím 400 nebo 500)
-                    isTooEarly = true;
-                    if (key != null) overrideError = "Neplatný klíč!";
-                }
-            }
+            // Trims whitespace to avoid URL errors
+            Nav.NavigateTo($"/dig/{inputId.Trim()}");
         }
-        catch (Exception)
-        {
-            // Fallback error
-            capsule = null;
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    public class DigResponseDto
-    {
-        public string Message { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }
-
-<style>
-    .center-container { display: flex; justify-content: center; padding-top: 50px; font-family: sans-serif; }
-    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
-    h1 { margin-top: 0; color: #333; }
-    .message-bubble { background: #f0f4f8; padding: 1.5rem; border-radius: 8px; font-size: 1.2rem; color: #2c3e50; margin: 1.5rem 0; font-style: italic; white-space: pre-wrap;}
-    .timestamp { color: #888; font-size: 0.9rem; }
-    .btn-secondary, .btn-warning { display: inline-block; padding: 10px 20px; border-radius: 6px; text-decoration: none; cursor: pointer; border: none; margin-top: 10px;}
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-warning { background: #e67e22; color: white; width: 100%; font-weight: bold; }
-    .override-section { margin-top: 2rem; padding: 1.5rem; border: 2px dashed #e67e22; border-radius: 8px; background: #fdf5e6; }
-    .override-section h3 { margin-top: 0; color: #d35400; }
-    .form-control { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    .error-text { color: red; margin-top: 5px; font-weight: bold; }
-    .link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 1rem; }
-</style>
