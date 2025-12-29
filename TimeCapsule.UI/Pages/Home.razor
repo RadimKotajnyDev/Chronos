@@ -2,53 +2,53 @@
 @inject HttpClient Http
 @using System.Net.Http.Json
 
-<PageTitle>Chronos - Nová kapsle</PageTitle>
+<PageTitle>Chronos - New capsule</PageTitle>
 
 <div class="min-h-screen flex justify-center pt-12 px-4 sm:px-6 lg:px-8">
     <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-8">
-        <h1 class="mt-0 text-3xl font-bold text-gray-800 text-center">⏳ Chronos</h1>
-        <p class="text-center text-gray-600 mb-8">Pošli vzkaz do budoucnosti.</p>
+        <h1 class="mt-0 text-3xl font-bold text-gray-800 text-center">Chronos</h1>
+        <p class="text-center text-gray-600 mb-8">Send a message to the future.</p>
 
         <div class="space-y-5">
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Tvůj vzkaz:</label>
-                <textarea @bind="message" rows="4" placeholder="Napiš něco tajného..."
+                <label class="block mb-2 font-medium text-gray-700">Your message:</label>
+                <textarea @bind="message" rows="4" placeholder="Write something..."
                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:border-transparent"></textarea>
             </div>
 
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Datum odemčení:</label>
+                <label class="block mb-2 font-medium text-gray-700">Unlock date:</label>
                 <input @bind="unlockAt" type="datetime-local"
                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:border-transparent" />
             </div>
 
             <div>
-                <label class="block mb-2 font-medium text-gray-700">Nouzový klíč (Overrider ID):</label>
-                <input @bind="customOverriderId" placeholder="Volitelné GUID (např. z guidgenerator.com)"
+                <label class="block mb-2 font-medium text-gray-700">Emergency key (Overrider ID):</label>
+                <input @bind="customOverriderId" placeholder="Optional GUID (e.g., from guidgenerator.com)"
                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:border-transparent" />
-                <small class="text-gray-500 text-sm">Pokud vyplníš, můžeš kapsli otevřít kdykoliv.</small>
+                <small class="text-gray-500 text-sm">If provided, you can open the capsule at any time.</small>
             </div>
 
             <button @onclick="BuryCapsule" disabled="@isSubmitting"
                     class="w-full rounded-md bg-slate-800 text-white py-3 font-medium transition-colors hover:bg-slate-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                @if (isSubmitting) { <span>Zakopávám... 🚧</span> } else { <span>Zakopat kapsli ⚰️</span> }
+                @if (isSubmitting) { <span>Burying...</span> } else { <span>Bury capsule</span> }
             </button>
 
             @if (lastResponseId != null)
             {
                 <div class="mt-4 rounded-md border border-emerald-500 bg-emerald-50 text-emerald-700 p-4 text-center">
-                    <h3 class="font-semibold">✅ Kapsle zakopána!</h3>
-                    <p class="mt-1">Uschovej si toto ID, budeš ho potřebovat k vyzvednutí:</p>
+                    <h3 class="font-semibold">Capsule buried!</h3>
+                    <p class="mt-1">Save this ID; you will need it to retrieve the capsule:</p>
                     <div class="mt-2 font-mono font-semibold text-gray-800 bg-white border border-gray-200 rounded px-2 py-1 inline-block">@lastResponseId</div>
                     <div class="mt-3">
-                        <a class="text-sky-600 hover:underline" href="/dig/@lastResponseId">Jít rovnou ke kapsli →</a>
+                        <a class="text-sky-600 hover:underline" href="/dig/@lastResponseId">Go to capsule →</a>
                     </div>
                 </div>
             }
 
             @if (errorMessage != null)
             {
-                <div class="mt-2 rounded-md border border-red-500 bg-red-50 text-red-700 p-3">❌ @errorMessage</div>
+                <div class="mt-2 rounded-md border border-red-500 bg-red-50 text-red-700 p-3">@errorMessage</div>
             }
         </div>
     </div>
@@ -56,7 +56,7 @@
 
 @code {
     private string message = "";
-    private DateTime unlockAt = DateTime.Now.AddDays(1); // Defaultně zítra
+    private DateTime unlockAt = DateTime.Now.AddDays(1);
     private string customOverriderId = "";
     private bool isSubmitting = false;
     private string? lastResponseId;
@@ -70,7 +70,6 @@
 
         try
         {
-            // Validace GUID (pokud je vyplněno, musí být platné)
             Guid? overriderGuid = null;
             if (!string.IsNullOrWhiteSpace(customOverriderId))
             {
@@ -80,7 +79,7 @@
                 }
                 else
                 {
-                    errorMessage = "Zadaný klíč není platné GUID!";
+                    errorMessage = "The provided key is not a valid GUID.";
                     isSubmitting = false;
                     return;
                 }
@@ -99,16 +98,16 @@
             {
                 var result = await response.Content.ReadFromJsonAsync<BuryResponseDto>();
                 lastResponseId = result?.Id.ToString();
-                message = ""; // Vyčistit pole
+                message = "";
             }
             else
             {
-                errorMessage = $"Chyba serveru: {response.StatusCode}";
+                errorMessage = $"Server error: {response.StatusCode}";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Nepodařilo se připojit k serveru: {ex.Message}";
+            errorMessage = $"Failed to connect to server: {ex.Message}";
         }
         finally
         {
